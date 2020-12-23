@@ -4,12 +4,17 @@ import express from 'express'
 import morgan from 'morgan'
 import authRoutes from './route/auth'
 import trim from "./middleware/trim";
+import dotenv from 'dotenv'
+import cookieParser from 'cookie-parser'
+
 const app = express()
 
 app.use(express.json())
 app.use(trim)
+app.use(cookieParser())
 app.use(morgan("dev"))
 app.use('/api/auth',authRoutes)
+
 
 app.get('/',(req,res) => res.send('Hello World'))
 
