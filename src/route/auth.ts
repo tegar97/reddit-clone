@@ -4,6 +4,7 @@ import {User } from './../entities/User'
 import bcrypt  from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import cookie from 'cookie'
+import auth from './../middleware/auth'
 const login = async(req:Request,res : Response) =>{
     const {username,password} = req.body
 
@@ -81,17 +82,26 @@ const register = async (req: Request,res : Response) =>{
         res.status(500).json(error)
     }
 }
-const me = (req: Request,res: Response) =>{
-    try {
-        const token =
-    } catch (error) {
-        console.log(error)
-        
-    }
+const me = async (req: Request,res: Response) =>{
+    return res.json(res.locals.user)
+}
+
+const logout = async (req: Request,res: Response) =>{
+    res.set('Set-Cookie',cookie.serialize('token','',{
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production' ? true: false,
+        sameSite: 'strict',
+        maxAge: 3600,
+        path: '/'
+    }))
+
+    return res.status(200).json({success: true})
 }
 const router = Router()
 
 router.post('/register',register)
 router.post('/login',login)
+router.post('/me',auth,login)
+router.post('/logout',auth,login)
 
 export default router
