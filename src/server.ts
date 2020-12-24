@@ -3,6 +3,8 @@ import {createConnection} from "typeorm";
 import express from 'express'
 import morgan from 'morgan'
 import authRoutes from './route/auth'
+import postRoutes from './route/post'
+import subsRoutes from './route/subs'
 import trim from "./middleware/trim";
 import dotenv from 'dotenv'
 import cookieParser from 'cookie-parser'
@@ -14,11 +16,13 @@ app.use(trim)
 app.use(cookieParser())
 app.use(morgan("dev"))
 app.use('/api/auth',authRoutes)
+app.use('/api/post',postRoutes)
+app.use('/api/subs',subsRoutes)
 
 
 app.get('/',(req,res) => res.send('Hello World'))
 
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 5000
 app.listen(PORT,async() =>{
     console.log('Server running at http://localhost:5000')
     try {

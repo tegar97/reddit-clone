@@ -1,8 +1,9 @@
 import { IsEmail, isEmail, Length, Min, min } from "class-validator";
-import {Entity as ToEntity , PrimaryGeneratedColumn, Column, BaseEntity, Index, CreateDateColumn, UpdateDateColumn, BeforeInsert} from "typeorm";
+import {Entity as ToEntity , PrimaryGeneratedColumn, Column, BaseEntity, Index, CreateDateColumn, UpdateDateColumn, BeforeInsert, OneToMany} from "typeorm";
 import bcrypt  from 'bcrypt'
 import { classToPlain,Exclude } from "class-transformer";
 import Entity from './Entity'
+import Post from "./Post";
 
 @ToEntity("users")
 export default class User extends Entity {
@@ -27,6 +28,8 @@ export default class User extends Entity {
     @Column({unique: true})
     username: string
 
+    @OneToMany(() => Post,post => post.user)
+    post: Post[]
 
 
     @BeforeInsert() 
