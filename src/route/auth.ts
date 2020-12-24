@@ -1,4 +1,4 @@
-import { isEmpty, IsEmpty, validate } from 'class-validator'
+import {validate } from 'class-validator'
 import {Request,Response, Router} from 'express'
 import User from './../entities/User'
 import bcrypt  from 'bcrypt'
@@ -45,7 +45,9 @@ const login = async(req:Request,res : Response) =>{
 
         return res.json(user)
     } catch (error) {
-        
+        console.log(error)
+
+        return res.json({error: 'Something Wrong'})
     }
 }
 const register = async (req: Request,res : Response) =>{

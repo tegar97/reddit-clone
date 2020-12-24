@@ -1,11 +1,12 @@
 import { IsEmail, isEmail, Length, Min, min } from "class-validator";
-import {Entity as ToEntity , PrimaryGeneratedColumn, Column, BaseEntity, Index, CreateDateColumn, UpdateDateColumn, BeforeInsert, ManyToOne, JoinColumn} from "typeorm";
+import {Entity as ToEntity , PrimaryGeneratedColumn, Column, BaseEntity, Index, CreateDateColumn, UpdateDateColumn, BeforeInsert, ManyToOne, JoinColumn, OneToMany} from "typeorm";
 import bcrypt  from 'bcrypt'
 import { classToPlain,Exclude } from "class-transformer";
 import Entity from './Entity'
 import User from "./User";
 import {makeid,SlugGenerete} from './../util/helper'
 import Sub from "./subs";
+import Comment from "./comments";
 
 @ToEntity("post")
 export default class Post extends Entity {
@@ -34,7 +35,10 @@ export default class Post extends Entity {
     @ManyToOne(() => User, (user) => user.post)
     @JoinColumn({ name: 'username', referencedColumnName: 'username' })
     user: User
-  
+    
+    @OneToMany(() => Comment,comment => comment.post)
+    comments: Comment[]
+
     @ManyToOne(() => Sub, (sub) => sub.posts)
     @JoinColumn({ name: 'subName', referencedColumnName: 'name' })
     sub: Sub

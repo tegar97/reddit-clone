@@ -1,7 +1,7 @@
-import { IsEmail, isEmail, Length, Min, min } from "class-validator";
-import {Entity as ToEntity , PrimaryGeneratedColumn, Column, BaseEntity, Index, CreateDateColumn, UpdateDateColumn, BeforeInsert, OneToMany} from "typeorm";
+import { IsEmail, Length } from "class-validator";
+import {Entity as ToEntity , Column, Index, BeforeInsert, OneToMany} from "typeorm";
 import bcrypt  from 'bcrypt'
-import { classToPlain,Exclude } from "class-transformer";
+import {Exclude } from "class-transformer";
 import Entity from './Entity'
 import Post from "./Post";
 

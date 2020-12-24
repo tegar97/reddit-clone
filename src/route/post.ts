@@ -8,7 +8,10 @@ export const createPost = async(req: Request,res : Response) =>{
    
     try {
         //TODO FIND SUB
-        const post  = new Post({title,body,user,subName: sub})
+        const subRecord = await sub.findOneOrFail({name: sub})
+
+
+        const post  = new Post({title,body,user,sub : subRecord})
         await post.save()
 
         return res.json(post)
@@ -23,9 +26,45 @@ export const createPost = async(req: Request,res : Response) =>{
 
 }
 
+export const getPosts = async(req: Request,res: Response) => {
+    try {
+        const post = await Post.find({
+            order: {createAt: 'DESC'},
+            relations: ['sub']
+        })
+
+        return res.json(post)
+    } catch (error) {
+        console.log(error)
+        return res.json({error: error})
+        
+    }
+}
+
+
+export const getPost = async(req: Request,res: Response) => {
+    const {identifier,slug} = req.params
+    try {
+        const post = await Post.findOneOrFail({
+            identifier,slug
+        },
+        {
+            relations: ['sub']
+        }
+        )
+
+        return res.json(post)
+    } catch (error) {
+        console.log(error)
+        return res.json({error: error})
+        
+    }
+}
 const router = Router()
 
 router.post('/',auth,createPost)
+router.get('/',getPosts)
+router.get('/:identifier/:slug',getPost)
 
 
 export default router
