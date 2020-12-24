@@ -1,4 +1,4 @@
-import { User } from './../entities/User';
+import User from './../entities/User';
 import  jwt  from 'jsonwebtoken';
 import { NextFunction, Request, Response } from 'express';
 export default async(req: Request,res: Response,next: NextFunction) =>{

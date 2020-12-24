@@ -18,7 +18,8 @@ app.use('/api/auth',authRoutes)
 
 app.get('/',(req,res) => res.send('Hello World'))
 
-app.listen(5000,async() =>{
+const PORT = process.env.PORT
+app.listen(PORT,async() =>{
     console.log('Server running at http://localhost:5000')
     try {
         await createConnection()

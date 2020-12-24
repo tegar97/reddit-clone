@@ -1,6 +1,6 @@
 import { isEmpty, IsEmpty, validate } from 'class-validator'
 import {Request,Response, Router} from 'express'
-import {User } from './../entities/User'
+import User from './../entities/User'
 import bcrypt  from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import cookie from 'cookie'
@@ -101,7 +101,7 @@ const router = Router()
 
 router.post('/register',register)
 router.post('/login',login)
-router.post('/me',auth,login)
-router.post('/logout',auth,login)
+router.get('/me',auth,me)
+router.get('/logout',auth,logout)
 
 export default router

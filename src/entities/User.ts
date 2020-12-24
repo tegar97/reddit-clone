@@ -1,15 +1,16 @@
 import { IsEmail, isEmail, Length, Min, min } from "class-validator";
-import {Entity, PrimaryGeneratedColumn, Column, BaseEntity, Index, CreateDateColumn, UpdateDateColumn, BeforeInsert} from "typeorm";
+import {Entity as ToEntity , PrimaryGeneratedColumn, Column, BaseEntity, Index, CreateDateColumn, UpdateDateColumn, BeforeInsert} from "typeorm";
 import bcrypt  from 'bcrypt'
 import { classToPlain,Exclude } from "class-transformer";
-@Entity("users")
-export class User extends BaseEntity {
+import Entity from './Entity'
+
+@ToEntity("users")
+export default class User extends Entity {
     constructor(user: Partial<User>){
         super()
         Object.assign(this,user)
     }
-    @PrimaryGeneratedColumn()
-    id: number;
+  
 
     @Index()
     @IsEmail()
@@ -26,19 +27,13 @@ export class User extends BaseEntity {
     @Column({unique: true})
     username: string
 
-    @CreateDateColumn()
-    createAt: Date
 
-    @UpdateDateColumn()
-    updateAt: Date
 
     @BeforeInsert() 
     async hashPassword() {
         this.password = await bcrypt.hash(this.password,6)
     }
 
-    toJSON(){
-        return classToPlain(this)
-    }
+    
        
 }
