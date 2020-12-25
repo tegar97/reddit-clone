@@ -4,8 +4,9 @@ import Image from 'next/image'
 
 export default function Home() {
   return (
-   <div>
-       Register
-   </div>
+    <div >
+      <p className='text-red-300 '>tes</p>
+     
+    </div>
   )
 }
