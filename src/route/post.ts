@@ -1,5 +1,7 @@
 import {Request,Response, Router} from 'express'
+import Comment from '../entities/Comments'
 import Post from '../entities/Post'
+import Sub from '../entities/subs'
 import auth from '../middleware/auth'
 
 export const createPost = async(req: Request,res : Response) =>{
@@ -8,7 +10,7 @@ export const createPost = async(req: Request,res : Response) =>{
    
     try {
         //TODO FIND SUB
-        const subRecord = await sub.findOneOrFail({name: sub})
+        const subRecord = await Sub.findOneOrFail({name: sub})
 
 
         const post  = new Post({title,body,user,sub : subRecord})
@@ -49,7 +51,7 @@ export const getPost = async(req: Request,res: Response) => {
             identifier,slug
         },
         {
-            relations: ['sub']
+            relations: ['sub','comments']
         }
         )
 
@@ -60,11 +62,33 @@ export const getPost = async(req: Request,res: Response) => {
         
     }
 }
+
+export const createComment = async(req: Request,res: Response) =>{
+    const {identifier, slug} = req.params
+    const {body} = req.body 
+
+    try {
+        const post = await Post.findOneOrFail({identifier,slug})
+
+        const comment = new Comment({
+            body,
+            user: res.locals.user,
+            post
+        })
+        await comment.save()
+        res.status(200).json(comment)
+
+    } catch (error) {
+        console.log(error)
+        res.status(400).json({message: error})
+    }
+}
 const router = Router()
 
 router.post('/',auth,createPost)
 router.get('/',getPosts)
-router.get('/:identifier/:slug',getPost)
+router.get('/:identifier/:slug',getPost)    
+router.post('/:identifier/:slug/comments',auth,createComment)
 
 
 export default router

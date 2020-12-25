@@ -6,7 +6,7 @@ import Entity from './Entity'
 import User from "./User";
 import {makeid,SlugGenerete} from './../util/helper'
 import Sub from "./subs";
-import Comment from "./comments";
+import Comment from './Comments';
 
 @ToEntity("post")
 export default class Post extends Entity {
@@ -36,13 +36,14 @@ export default class Post extends Entity {
     @JoinColumn({ name: 'username', referencedColumnName: 'username' })
     user: User
     
-    @OneToMany(() => Comment,comment => comment.post)
-    comments: Comment[]
-
+    
     @ManyToOne(() => Sub, (sub) => sub.posts)
     @JoinColumn({ name: 'subName', referencedColumnName: 'name' })
     sub: Sub
-  
+
+    @OneToMany(() => Comment, (comment) => comment.post)
+    comments: Comment[]
+    
     @BeforeInsert()
     makeIdAndSlug() {
         this.identifier = makeid(7)
