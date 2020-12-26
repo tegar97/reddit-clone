@@ -14,7 +14,8 @@ export default class User extends Entity {
   
 
     @Index()
-    @IsEmail()
+    @IsEmail(undefined,{message: 'Email must not be empty'})
+    @Length(1,255,{message: 'Email must length than 1   '})
     @Column({unique: true})
     email: string;
 

@@ -1,3 +1,4 @@
+import { Length } from 'class-validator';
 import {validate } from 'class-validator'
 import {Request,Response, Router} from 'express'
 import User from './../entities/User'
@@ -64,8 +65,17 @@ const register = async (req: Request,res : Response) =>{
         const user = new User({email,password,username}) 
 
         errors = await validate(user)
-        if(Object.keys(errors).length > 0) {
-            res.status(400).json(errors)
+        if(errors.length > 0) {
+            let mappedErrors : any = {}
+            errors.forEach((e: any) => {
+
+                // console.log('a',Object.entries(e.constrainst))
+                console.log(e)
+                let key = e.property
+                const value = Object.entries(e.constrainst)[0][1]
+                mappedErrors[key] = value
+            })
+            res.status(400).json({mappedErrors})
         }
 
         // TODO CREATE THE USER

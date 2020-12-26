@@ -20,13 +20,13 @@ export default function Home() {
               <label htmlFor="aggrement" className="m-2 text-xs">I agree to get emails about cool stuf on readit</label>
             </div>
             <div className="mb-2">
-              <input type="email" className="w-full px-3 py-2 bg-gray-100 border border-gray-400 rounded" placeholder="Email"/>
+              <input type="email" className="w-full p-3 transition duration-200 border border-gray-300 rounded outline-none bg-gray-50 focus:bg-white hover:bg-white" placeholder="Email"/>
             </div>
             <div className="mb-2">
-              <input type="text" className="w-full px-3 py-2 bg-gray-100 border border-gray-400 rounded" placeholder="Username"/>
+              <input type="text" className="w-full p-3 transition duration-200 border border-gray-300 rounded outline-none bg-gray-50 focus:bg-white hover:bg-white" placeholder="Username"/>
             </div>
             <div className="mb-2">
-              <input type="password" className="w-full px-3 py-2 bg-gray-100 border border-gray-400 rounded" placeholder="Password"/>
+              <input type="password" className="w-full p-3 transition duration-200 border border-gray-300 rounded outline-none bg-gray-50 focus:bg-white hover:bg-white" placeholder="Password"/>
             </div>
             <button className="w-full py-2 mb-4 text-xs font-bold text-white uppercase bg-blue-500 border border-blue-500 rounded">Sign Up</button>
           </form>
