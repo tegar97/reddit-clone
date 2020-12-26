@@ -1,35 +1,32 @@
 import { Length } from 'class-validator';
 import {validate } from 'class-validator'
-import {Request,Response, Router} from 'express'
+import {NextFunction, Request,Response, Router} from 'express'
 import User from './../entities/User'
 import bcrypt  from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import cookie from 'cookie'
 import auth from './../middleware/auth'
-const login = async(req:Request,res : Response) =>{
+import asyncHandler from '../util/asyncHandler';
+import AppError from '../util/appError';
+
+const login = asyncHandler(async(req:Request,res : Response,next: NextFunction) =>{
+    /*
+    1.user send username and password and server receive data on req.body
+    2.find username on USER TABLE(DATABASE),if username avaible , send to next step, if error send to errorHandler
+    3.compare password on database and req.body.password 
+    4.send cookies to http headers
+    
+    */
     const {username,password} = req.body
-
-    try {
         let errors : any = {}
-
-        // if(isEmpty(username)) errors.username = 'username must not be empty'
-        // if(IsEmpty(password)) errors.password = 'Password must not be empty'
-        // if(Object.keys(errors).length > 0) {
-        //     return res.status(400).json(errors)
-        // }
         const user = await User.findOne({username})
+        
         if(!user) { 
-            return res.status(400).json({
-                message: 'User Not Found'
-            })
+            return next(new AppError('User not found',400))
         }
-
         const passwordMatch = await bcrypt.compare(password,user.password)
         if(!passwordMatch) {
-            return res.status(400).json({
-                message: 'Password incorect'
-            })
-
+            return next(new AppError('wrong Password',400))
         }
 
         const token = jwt.sign({username},process.env.JWT_SECRET)
@@ -45,12 +42,8 @@ const login = async(req:Request,res : Response) =>{
 
 
         return res.json(user)
-    } catch (error) {
-        console.log(error)
+    })
 
-        return res.json({error: 'Something Wrong'})
-    }
-}
 const register = async (req: Request,res : Response) =>{
     const {email,password,username} = req.body
 
