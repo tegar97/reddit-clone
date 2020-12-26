@@ -9,13 +9,19 @@ import auth from './../middleware/auth'
 import asyncHandler from '../util/asyncHandler';
 import AppError from '../util/appError';
 
+const mapErrors = (errors: Object[]) => {
+    return errors.reduce((prev: any, err: any) => {
+      prev[err.property] = Object.entries(err.constraints)[0][1]
+      return prev
+    }, {})
+  }
 const login = asyncHandler(async(req:Request,res : Response,next: NextFunction) =>{
     /*
     1.user send username and password and server receive data on req.body
     2.find username on USER TABLE(DATABASE),if username avaible , send to next step, if error send to errorHandler
     3.compare password on database and req.body.password 
     4.send cookies to http headers
-    
+
     */
     const {username,password} = req.body
         let errors : any = {}
@@ -44,31 +50,26 @@ const login = asyncHandler(async(req:Request,res : Response,next: NextFunction) 
         return res.json(user)
     })
 
-const register = async (req: Request,res : Response) =>{
+const register = asyncHandler(async (req: Request,res : Response,next: NextFunction) =>{
     const {email,password,username} = req.body
 
-    try {
         // TODO VALIDATE DATA
         let errors : any = {}
         const emailUser = await User.findOne({email})
         const userNameUser = await User.findOne({username})
 
-        if(emailUser) errors.email  = 'Email is taken'
-        if(userNameUser) errors.password  = 'username is taken'
+        if(emailUser)errors.email = 'Email has been used'
+        if(userNameUser) errors.password = 'Username has been taken'
+        if (Object.keys(errors).length > 0) {
+
+            return next(new AppError('Validate Error',400,errors))
+
+        }
         const user = new User({email,password,username}) 
 
         errors = await validate(user)
         if(errors.length > 0) {
-            let mappedErrors : any = {}
-            errors.forEach((e: any) => {
-
-                // console.log('a',Object.entries(e.constrainst))
-                console.log(e)
-                let key = e.property
-                const value = Object.entries(e.constrainst)[0][1]
-                mappedErrors[key] = value
-            })
-            res.status(400).json({mappedErrors})
+            return next(new AppError('Validate Error',400,mapErrors(errors)))
         }
 
         // TODO CREATE THE USER
@@ -82,11 +83,9 @@ const register = async (req: Request,res : Response) =>{
         // TODO RETURN USER
         res.json(user)
 
-    } catch (error) {
-        console.log(error)
-        res.status(500).json(error)
-    }
-}
+    
+})
+
 const me = async (req: Request,res: Response) =>{
     return res.json(res.locals.user)
 }
