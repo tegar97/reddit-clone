@@ -3,7 +3,7 @@ import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import Image from 'next/image'
 import { GetStaticProps } from 'next'
-
+import Link from 'next/link'
 export default function Home({posts}) {
 
   
@@ -16,7 +16,10 @@ export default function Home({posts}) {
       <div className="w-160">
         {
           posts.map(data =>(
-            data.title
+            <ul>
+              <Link href={`/post/${data.identifier}/${data.slug}`}>{data.title}</Link>
+
+            </ul>
           ))
         }
      
