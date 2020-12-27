@@ -3,9 +3,11 @@ import { NextFunction, Request, Response } from 'express';
 const sendErrorDev = (err,req,res) =>{
     res.status(err.statusCode).json({
         status: err.status,
-        error: err,
         message: err.message,
-        stack: err.stack
+        stack: err.stack,
+        error: err.additional,
+        reason: err
+
     })
 }
 

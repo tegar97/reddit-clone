@@ -25,17 +25,22 @@ const login = asyncHandler(async(req:Request,res : Response,next: NextFunction) 
     */
     const {username,password} = req.body
     let errors : any = {}
-    const user = await User.findOne({username})
-        
-    if(!user)errors.username = 'User Not Found'
+    const user = await User.findOneOrFail({username})
+    
+    if(!user) errors.username = 'Username Incorect'
     const passwordMatch = await bcrypt.compare(password,user.password)
+    
+
     if(!passwordMatch) errors.password = 'Password Incorect'
 
+    
     if (Object.keys(errors).length > 0) {
+
         return next(new AppError('Validate Error',400,errors))
     }
-    errors = await validate(user)
+
     if(errors.length > 0) {
+
         return next(new AppError('Validate Error',400,mapErrors(errors)))
     }
 
@@ -59,34 +64,26 @@ const register = asyncHandler(async (req: Request,res : Response,next: NextFunct
     const {email,password,username} = req.body
 
         // TODO VALIDATE DATA
-        let errors : any = {}
-        const emailUser = await User.findOne({email})
-        const userNameUser = await User.findOne({username})
+    let errors : any = {}
+    const emailUser = await User.findOne({email})
+    const userNameUser = await User.findOne({username})
 
-        if(emailUser)errors.email = 'Email has been used'
-        if(userNameUser) errors.password = 'Username has been taken'
-        if (Object.keys(errors).length > 0) {
+    if(emailUser)errors.email = 'Email has been used'
+    if(userNameUser) errors.password = 'Username has been taken'
+    if (Object.keys(errors).length > 0) {
+       return next(new AppError('Validate Error',400,errors))
+    }
+    const user = new User({email,password,username}) 
 
-            return next(new AppError('Validate Error',400,errors))
+    errors = await validate(user)
+    if(errors.length > 0) {
+        return next(new AppError('Validate Error',400,mapErrors(errors)))
+    }
 
-        }
-        const user = new User({email,password,username}) 
-
-        errors = await validate(user)
-        if(errors.length > 0) {
-            return next(new AppError('Validate Error',400,mapErrors(errors)))
-        }
-
-        // TODO CREATE THE USER
-    
-        
-
-        await user.save()
-
-        
-
-        // TODO RETURN USER
-        res.json(user)
+    // TODO CREATE THE USER
+    await user.save()
+     // TODO RETURN USER
+    res.json(user)
 
     
 })

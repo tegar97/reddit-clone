@@ -23,8 +23,8 @@ export default function Home() {
 
         const res = await axios.post('/auth/register',{
           email,
-          password,
-          username
+          username,
+          password
         })
         router.push('/login')
       }
@@ -35,7 +35,7 @@ export default function Home() {
   
   }
   return (
-   <div className="flex"> 
+   <div className="flex bg-white"> 
        <Head>
          <title>Register</title>
          <link rel="icon" href="favicon.ico"/>
@@ -55,7 +55,7 @@ export default function Home() {
             </div>
            <InputGroup type="email" className="mb-2" value={email} setValue={setEmail} placeholder="Email" error={errors.error?.email}/>
            <InputGroup type="text" className="mb-2" value={username} setValue={setUsername} placeholder="Username" error={errors.error?.username}/>
-           <InputGroup type="password" className="mb-2" value={password} setValue={setPassword} placeholder="Email" error={errors.error?.password}/>
+           <InputGroup type="password" className="mb-2" value={password} setValue={setPassword} placeholder="Password" error={errors.error?.password}/>
            
             <button className="w-full py-2 mb-4 text-xs font-bold text-white uppercase bg-blue-500 border border-blue-500 rounded">Sign Up</button>
           </form>

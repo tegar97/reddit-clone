@@ -16,19 +16,19 @@ export default function Home() {
 
     try {
         const res = await axios.post('/auth/login',{
-          password,
-          username
+          username,
+          password
         })
-        router.push('/login')
+        router.push('/')
       
     } catch (error) {
       console.log(error)
-      setErrors(error.response.data)
+      setErrors(error.response)
     }
   
   }
   return (
-   <div className="flex"> 
+   <div className="flex bg-white"> 
        <Head>
          <title>Login</title>
        </Head>
@@ -41,8 +41,8 @@ export default function Home() {
           <p className="mb-10 text-xs">By Continuing,you agree to our User Agreement and Privacy  Policy</p>
           <form onSubmit={onSubmit}>
           
-           <InputGroup type="text" className="mb-2" value={username} setValue={setUsername} placeholder="Username" error={errors.error?.username}/>
-           <InputGroup type="password" className="mb-2" value={password} setValue={setPassword} placeholder="Password" error={errors.error?.password}/>
+           <InputGroup type="text" className="mb-2" value={username} setValue={setUsername} placeholder="Username" error={errors?.error?.username}/>
+           <InputGroup type="password" className="mb-2" value={password} setValue={setPassword} placeholder="Password" error={errors?.error?.password}/>
            
             <button className="w-full py-2 mb-4 text-xs font-bold text-white uppercase bg-blue-500 border border-blue-500 rounded">Login</button>
           </form>
