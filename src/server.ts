@@ -9,12 +9,12 @@ import trim from "./middleware/trim";
 import dotenv from 'dotenv'
 import cookieParser from 'cookie-parser'
 import ErrorHandler from "./util/ErrorHandler";
-
+import cors from 'cors'
 
 dotenv.config()
 
 const app = express()
-
+app.use(cors())
 app.use(express.json())
 app.use(trim)
 app.use(cookieParser())

@@ -24,25 +24,30 @@ const login = asyncHandler(async(req:Request,res : Response,next: NextFunction) 
 
     */
     const {username,password} = req.body
-        let errors : any = {}
-        const user = await User.findOne({username})
+    let errors : any = {}
+    const user = await User.findOne({username})
         
-        if(!user) { 
-            return next(new AppError('User not found',400))
-        }
-        const passwordMatch = await bcrypt.compare(password,user.password)
-        if(!passwordMatch) {
-            return next(new AppError('wrong Password',400))
-        }
+    if(!user)errors.username = 'User Not Found'
+    const passwordMatch = await bcrypt.compare(password,user.password)
+    if(!passwordMatch) errors.password = 'Password Incorect'
 
-        const token = jwt.sign({username},process.env.JWT_SECRET)
+    if (Object.keys(errors).length > 0) {
+        return next(new AppError('Validate Error',400,errors))
+    }
+    errors = await validate(user)
+    if(errors.length > 0) {
+        return next(new AppError('Validate Error',400,mapErrors(errors)))
+    }
 
-        res.set('Set-Cookie',cookie.serialize('token',token,{
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production' ? true: false,
-            sameSite: 'strict',
-            maxAge: 3600,
-            path: '/'
+
+    const token = jwt.sign({username},process.env.JWT_SECRET)
+
+    res.set('Set-Cookie',cookie.serialize('token',token,{
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production' ? true: false,
+        sameSite: 'strict',
+        maxAge: 3600,
+        path: '/'
 
         }))
 
